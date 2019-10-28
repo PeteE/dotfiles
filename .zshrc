@@ -66,6 +66,7 @@ unalias rm
 unalias cp
 unalias mv
 
+export DOTFILES_REPO_PATH=~/dotfiles
 export EDITOR='vim'
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PYTHONWARNINGS="ignore:Unverified HTTPS request"
