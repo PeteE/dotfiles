@@ -8,7 +8,6 @@ ZSH_COMPDUMP="${ZDOTDIR:-${HOME}}/.zcompdump"
 
 
 # oh-my-zsh- plugin settings
-#apt_pref='apt-get'
 ZSH_TMUX_AUTOSTART_ONCE=true
 ZSH_TMUX_AUTOCONNECT=true
 
@@ -70,7 +69,6 @@ unalias mv
 export EDITOR='vim'
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PYTHONWARNINGS="ignore:Unverified HTTPS request"
-#export AWS_DEFAULT_PROFILE=production
 
 export pup=~/dev/puppet-cloud
 export deki=~/dev/Deki
@@ -87,8 +85,6 @@ export GOPATH=~/go
 # don't correct arguments
 setopt nocorrectall
 setopt correct
-
-# source $HOME/.local/lib/python3.6/site-packages/powerline/bindings/zsh/powerline.zsh
 
 source ~/.zshrc-private
 
