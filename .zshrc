@@ -1,4 +1,4 @@
-export PATH=$HOME/bin:/usr/local/bin:$PATH:~/go/bin:$HOME/.local/bin:/opt/Signal:/usr/local/rider/bin:$HOME/.krew/bin
+export PATH=$HOME/bin:/usr/local/bin:$PATH:~/go/bin:$HOME/.local/bin:/opt/Signal:/usr/local/rider/bin:$HOME/.krew/bin:$HOME/.cargo/bin
 export ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="spaceship"
 ENABLE_CORRECTION="true"
@@ -6,13 +6,12 @@ COMPLETION_WAITING_DOTS="true"
 HIST_STAMPS="yyyy-mm-dd"
 ZSH_COMPDUMP="${ZDOTDIR:-${HOME}}/.zcompdump"
 
-
 # oh-my-zsh- plugin settings
 ZSH_TMUX_AUTOSTART_ONCE=true
 ZSH_TMUX_AUTOCONNECT=true
 
 #plugins=(aws ssh-agent common-aliases gpg-agent history zsh-completions vi-mode kubectl)
-plugins=(aws ssh-agent common-aliases gpg-agent history zsh-completions vi-mode kubectl docker extract pass systemd tmux web-search)
+plugins=(aws ssh-agent common-aliases gpg-agent history zsh-completions zsh-autosuggestions zsh-syntax-highlighting vi-mode kubectl docker extract pass systemd tmux web-search)
 autoload -U compinit && compinit
 
 source <(kubectl completion zsh)
@@ -50,7 +49,6 @@ export RPS1="%{$reset_color%}"
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-alias ls='exa'
 alias k='kubectl'
 alias ks='kubectl -n kube-system'
 alias km='kubectl -n monitoring'
@@ -134,13 +132,13 @@ extip() {
     curl -s ifconfig.co
 }
 
+alias ll='exa -alh --sort modified'
 eval "$(lua5.3 $HOME/dev/z.lua/z.lua --init zsh)"
 #
 #export LAMBDASHARP=~/dev/LambdaSharpTool
 #source $LAMBDASHARP/Scripts/set-lash-version.sh
 #alias lash="dotnet run -p $LAMBDASHARP/src/LambdaSharp.Tool/LambdaSharp.Tool.csproj --"
 #alias lash="dotnet lash"
-export LAMBDASHARP_VERSION=0.6.0.1
 export LAMBDASHARP_PROFILE=Default
 export LAMBDASHARP_TIER=alpha
 

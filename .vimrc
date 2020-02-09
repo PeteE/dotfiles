@@ -31,7 +31,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'mtth/scratch.vim'
 Plug 'mileszs/ack.vim'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'gabrielelana/vim-markdown'
 Plug 'terryma/vim-smooth-scroll'
 Plug 'benmills/vimux'
 Plug 'christoomey/vim-tmux-navigator'
@@ -46,6 +45,9 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'arcticicestudio/nord-vim'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-utils/vim-man'
+Plug 'romainl/vim-qf'
+Plug 'junegunn/vim-peekaboo'
+
 " Plug 'Valloric/YouCompleteMe'
 
 call plug#end()
@@ -59,14 +61,22 @@ nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>= <C-w>=
 
+" peakaboo
+let g:peekaboo_window = 'vertical abo 60new'
+let g:peekaboo_compact = 0
+
+" vim-qf
+let g:qf_max_height = 20
+
 let NERDTreeShowHidden=1
 nnoremap <Leader>nt :NERDTreeToggle<CR>
 
+let g:ackhighlight=1
 cnoreabbrev Ack Ack!
-nnoremap <Leader>a :Ack!<Space>
-set statusline=%f\ -\ FileType:\ %y
+nnoremap <Leader>a yw:Ack!<Space><CR>0
 
-let g:markdown_enable_spell_checking = 0
+
+set statusline=%f\ -\ FileType:\ %y
 
 " Smoothscroll
 noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 4)<CR>
@@ -74,6 +84,9 @@ noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 4)<CR>
 noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
 noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 
+" CtrlP
+let g:ctrlp_working_path_mode = 'c'
+set wildignore+=*/.venv/*,*/bin/*,*/src/packages/*
 " Insert timestamp
 nmap <Leader>ts i<C-R>=strftime("%Y-%m-%d %H:%M %Z")<CR><Esc>
 
@@ -81,7 +94,13 @@ nmap <Leader>ts i<C-R>=strftime("%Y-%m-%d %H:%M %Z")<CR><Esc>
 let g:SimpylFold_docstring_preview = 0
 
 " set colorscheme to nord
+let g:nord_uniform_diff_background = 1
+let g:nord_italic = 1
+let g:nord_italic_comments = 1
+
 colorscheme nord
+
+set diffopt+=vertical
 
 nnoremap <Leader>vo :call VimuxOpenRunner()<CR>
 function! VimuxSlime()

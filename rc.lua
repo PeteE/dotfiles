@@ -654,24 +654,21 @@ awful.rules.rules = {
     {
         rule = { class = "Slack" },
         properties = {
-            screen = "HDMI-1",
-            -- screen = "eDP-1",
+            screen = "DP-2",
             tag = awful.util.tagnames[3],
-            switchtotag = true,
             floating = false,
-            maximized = false,
-            maximized_vertical = true,
-            maximized_horizontal = true
+            maximized_vertical = false,
+            maximized_horizontal = false
         }
     },
     {
         rule = { class = "Signal" },
         properties = {
-            screen = "HDMI-1",
+            screen = "DP-2",
             tag = awful.util.tagnames[5],
-            floating = false,
-            maximized_vertical = true,
-            maximized_horizontal = true
+            floating = true,
+            maximized_vertical = false,
+            maximized_horizontal = false
         },
     },
 }
