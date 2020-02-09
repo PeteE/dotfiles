@@ -64,6 +64,7 @@ nnoremap <leader>= <C-w>=
 " peakaboo
 let g:peekaboo_window = 'vertical abo 60new'
 let g:peekaboo_compact = 0
+let g:peekaboo_delay = 300
 
 " vim-qf
 let g:qf_max_height = 20
