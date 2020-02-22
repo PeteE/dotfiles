@@ -47,6 +47,9 @@ Plug 'tpope/vim-fugitive'
 Plug 'vim-utils/vim-man'
 Plug 'romainl/vim-qf'
 Plug 'junegunn/vim-peekaboo'
+Plug 'jaredgorski/spacecamp'
+Plug 'markonm/traces.vim'
+Plug 'unblevable/quick-scope'
 
 " Plug 'Valloric/YouCompleteMe'
 
@@ -69,6 +72,12 @@ let g:peekaboo_delay = 300
 " vim-qf
 let g:qf_max_height = 20
 
+" quick-scope
+"let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+
+highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
+highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
+
 let NERDTreeShowHidden=1
 nnoremap <Leader>nt :NERDTreeToggle<CR>
 
@@ -86,7 +95,7 @@ noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
 noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 
 " CtrlP
-let g:ctrlp_working_path_mode = 'c'
+let g:ctrlp_clear_cache_on_exit = 0
 set wildignore+=*/.venv/*,*/bin/*,*/src/packages/*
 " Insert timestamp
 nmap <Leader>ts i<C-R>=strftime("%Y-%m-%d %H:%M %Z")<CR><Esc>
@@ -95,11 +104,13 @@ nmap <Leader>ts i<C-R>=strftime("%Y-%m-%d %H:%M %Z")<CR><Esc>
 let g:SimpylFold_docstring_preview = 0
 
 " set colorscheme to nord
-let g:nord_uniform_diff_background = 1
-let g:nord_italic = 1
-let g:nord_italic_comments = 1
+" let g:nord_uniform_diff_background = 1
+" let g:nord_italic = 1
+" let g:nord_italic_comments = 1
 
-colorscheme nord
+" colorscheme nord
+
+colorscheme spacecamp
 
 set diffopt+=vertical
 
@@ -114,4 +125,5 @@ autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 let g:tmux_navigator_disable_when_zoomed = 1
 
-map <Space> :noh<cr>
+"map <Space> :noh<cr>
+noremap <Space> :
