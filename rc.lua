@@ -1,11 +1,3 @@
---[[
-
-     Awesome WM configuration template
-     github.com/lcpz
-
---]]
-
--- {{{ Required libraries
 local awesome, client, mouse, screen, tag = awesome, client, mouse, screen, tag
 local ipairs, string, os, table, tostring, tonumber, type = ipairs, string, os, table, tostring, tonumber, type
 
@@ -20,16 +12,15 @@ local menubar       = require("menubar")
 local freedesktop   = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
                       require("awful.hotkeys_popup.keys")
+
+local cyclefocus = require('cyclefocus')
+
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
--- }}}
 
 -- Local configs
 local foggy = require('foggy')
 -- Load the widget.
 
--- {{{ Error handling
--- Check if awesome encountered an error during startup and fell back to
--- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
     naughty.notify({ preset = naughty.config.presets.critical,
                      title = "Oops, there were errors during startup!",
@@ -49,9 +40,6 @@ do
         in_error = false
     end)
 end
--- }}}
-
--- {{{ Autostart windowless processes
 
 -- This function will run once every time Awesome is started
 local function run_once(cmd_arr)
@@ -64,13 +52,12 @@ run_once(
   {
       "autorandr --load desk",
       "xautolock -time 10 -locker 'gnome-screensaver-command -l' -cornersize 10 -corners 00+- -detectsleep -cornerdelay 3",
-      -- "unclutter -root",
+      "xmodmap ~/.Xmodmap",
       "$HOME/bin/greenclip daemon",
+      -- "unclutter -root",
   }
 )
--- }}}
 
--- {{{ Variable definitions
 local themes = {
     "blackburn",       -- 1
     "copland",         -- 2
@@ -87,7 +74,8 @@ local themes = {
 local chosen_theme = themes[6]
 local modkey       = "Mod4"
 local altkey       = "Mod1"
-local terminal     = "gnome-terminal"
+local terminal     = "alacritty"
+-- local terminal     = "gnome-terminal"
 local editor       = os.getenv("EDITOR") or "vim"
 local gui_editor   = "gvim"
 local browser      = "firefox"
@@ -95,11 +83,12 @@ local guieditor    = "gvim"
 local scrlocker    = "gnome-screensaver-command -l"
 local brightness   = os.getenv("HOME") .. "/bin/brightness"
 
+
 awful.util.terminal = terminal
-awful.util.tagnames = { "web", "term", "slack", "zoom", "scratch" }
+awful.util.tagnames = { "1", "2", "3", "4", "6", "7", "8", "9" }
 awful.layout.layouts = {
-    awful.layout.suit.floating,
     awful.layout.suit.tile,
+    awful.layout.suit.floating,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
@@ -170,9 +159,12 @@ lain.layout.cascade.tile.ncol          = 2
 
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
 
-beautiful.font = "Fira Code 10"
+beautiful.font = "Fira Code 12"
 beautiful.menu_width = 200
 beautiful.menu_height = 12
+beautiful.notification_shape = gears.shape.rounded_rect
+beautiful.notification_bg = '#212730'
+naughty.config.defaults.screen = 1
 
 -- beautiful.tasklist_spacing = 50
 beautiful.tasklist_disable_task_name = true
@@ -196,58 +188,24 @@ awful.util.mymainmenu = freedesktop.menu.build({
         -- other triads can be put here
     }
 })
--- hide menu when mouse leaves it
--- awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() awful.util.mymainmenu:hide() end)
 
 menubar.utils.terminal = terminal -- Set the Menubar terminal for applications that require it
--- }}}
 
--- {{{ Screen
--- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry", function(s)
-    -- Wallpaper
-    if beautiful.wallpaper then
-        local wallpaper = beautiful.wallpaper
-        -- If wallpaper is a function, call it with the screen
-        if type(wallpaper) == "function" then
-            wallpaper = wallpaper(s)
-        end
-        gears.wallpaper.maximized(wallpaper, s, true)
-    end
-end)
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
--- }}}
 
--- awful.screen.connect_for_each_screen(
---     function(s)
---         naughty.notify(
---             {
---                 preset = naughty.config.presets.normal,
---                 title = "here",
---                 text = tostring(screen:count())
---             }
---         )
---     end
--- )
-
--- {{{ Mouse bindings
 root.buttons(my_table.join(
     awful.button({ }, 3, function () awful.util.mymainmenu:toggle() end),
     awful.button({ }, 4, awful.tag.viewnext),
     awful.button({ }, 5, awful.tag.viewprev)
 ))
--- }}}
 
--- {{{ Key bindings
 globalkeys = my_table.join(
     -- Take a screenshot
     awful.key({ altkey }, "s", function() os.execute("flameshot gui") end,
               {description = "take a screenshot", group = "hotkeys"}),
     awful.key({ altkey }, "s", function() os.execute("flameshot gui") end,
               {description = "take a screenshot", group = "hotkeys"}),
-    awful.key({ modkey, "Shift"}, "f", function() os.execute("rofi -show window") end,
-              {description = "launch rofi", group = "hotkeys"}),
 
     awful.key({ modkey }, "p",      foggy.menu),
 
@@ -275,18 +233,10 @@ globalkeys = my_table.join(
               {description = "view  previous nonempty", group = "tag"}),
 
     -- Default client focus
-    awful.key({ altkey,           }, "j",
-        function ()
-            awful.client.focus.byidx( 1)
-        end,
-        {description = "focus next by index", group = "client"}
-    ),
-    awful.key({ altkey,           }, "k",
-        function ()
-            awful.client.focus.byidx(-1)
-        end,
-        {description = "focus previous by index", group = "client"}
-    ),
+    awful.key({ altkey,           }, "j", function () awful.client.focus.byidx( 1) end,
+        {description = "focus next by index", group = "client"}),
+    awful.key({ altkey,           }, "k", function () awful.client.focus.byidx(-1) end,
+        {description = "focus previous by index", group = "client"}),
 
     -- By direction client focus
     awful.key({ modkey }, "j",
@@ -327,14 +277,13 @@ globalkeys = my_table.join(
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
-    awful.key({ modkey,           }, "Tab",
-        function ()
-            awful.client.focus.history.previous()
-            if client.focus then
-                client.focus:raise()
-            end
-        end,
-        {description = "go back", group = "client"}),
+
+    -- modkey+Tab: cycle through all clients.
+    awful.key({ modkey }, "Tab", function(c) cyclefocus.cycle({modifier="Super_L"}) end,
+              {description = "cycle clients", group = "client"}),
+    -- modkey+Shift+Tab: backwards
+    awful.key({ modkey, "Shift" }, "Tab", function(c) cyclefocus.cycle({modifier="Super_L"}) end,
+              {description = "cycle clients reverse", group = "client"}),
 
     -- Show/Hide Wibox
     awful.key({ modkey }, "b", function ()
@@ -352,18 +301,6 @@ globalkeys = my_table.join(
               {description = "increment useless gaps", group = "tag"}),
     awful.key({ altkey, "Control" }, "-", function () lain.util.useless_gaps_resize(-1) end,
               {description = "decrement useless gaps", group = "tag"}),
-
-    -- Dynamic tagging
-    awful.key({ modkey, "Shift" }, "n", function () lain.util.add_tag() end,
-              {description = "add new tag", group = "tag"}),
-    -- awful.key({ modkey, "Shift" }, "r", function () lain.util.rename_tag() end,
-    --           {description = "rename tag", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "Left", function () lain.util.move_tag(-1) end,
-              {description = "move tag to the left", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "Right", function () lain.util.move_tag(1) end,
-              {description = "move tag to the right", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "d", function () lain.util.delete_tag() end,
-              {description = "delete tag", group = "tag"}),
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
@@ -398,21 +335,6 @@ globalkeys = my_table.join(
               end,
               {description = "restore minimized", group = "client"}),
 
-    -- petetest
-    awful.key({ modkey, }, "z",
-        function()
-            -- for s in screen do
-                naughty.notify(
-                    {
-                        preset = naughty.config.presets.normal,
-                        title = "here",
-                        text = tostring(screen:count())
-                    }
-                )
-            -- end
-        end,
-        {description = "petetest", group = "layout"}),
-
     -- Brightness
     awful.key({ }, "#72", function () os.execute(brightness .. " up") end,
               {description = "+10%", group = "hotkeys"}),
@@ -439,44 +361,6 @@ globalkeys = my_table.join(
         end,
         {description = "toggle mute", group = "hotkeys"}),
 
-    -- MPD control
-    awful.key({ altkey, "Control" }, "Up",
-        function ()
-            os.execute("mpc toggle")
-            beautiful.mpd.update()
-        end,
-        {description = "mpc toggle", group = "widgets"}),
-    awful.key({ altkey, "Control" }, "Down",
-        function ()
-            os.execute("mpc stop")
-            beautiful.mpd.update()
-        end,
-        {description = "mpc stop", group = "widgets"}),
-    awful.key({ altkey, "Control" }, "Left",
-        function ()
-            os.execute("mpc prev")
-            beautiful.mpd.update()
-        end,
-        {description = "mpc prev", group = "widgets"}),
-    awful.key({ altkey, "Control" }, "Right",
-        function ()
-            os.execute("mpc next")
-            beautiful.mpd.update()
-        end,
-        {description = "mpc next", group = "widgets"}),
-    awful.key({ altkey }, "0",
-        function ()
-            local common = { text = "MPD widget ", position = "top_middle", timeout = 2 }
-            if beautiful.mpd.timer.started then
-                beautiful.mpd.timer:stop()
-                common.text = common.text .. lain.util.markup.bold("OFF")
-            else
-                beautiful.mpd.timer:start()
-                common.text = common.text .. lain.util.markup.bold("ON")
-            end
-            naughty.notify(common)
-        end,
-        {description = "mpc on/off", group = "widgets"}),
 
     -- Copy primary to clipboard (terminals to gtk)
     awful.key({ modkey }, "c", function () awful.spawn.with_shell("xsel | xsel -i -b") end,
@@ -490,23 +374,15 @@ globalkeys = my_table.join(
     awful.key({ modkey }, "q", function () awful.spawn(browser) end,
               {description = "run browser", group = "launcher"}),
 
+    awful.key({ modkey, "Shift"}, "f", function() os.execute("rofi -show window") end,
+              {description = "Find window", group = "hotkeys"}),
     awful.key({ modkey, "Shift" }, "r", function() os.execute("rofi -show run") end,
-              {description = "rofi", group = "hotkeys"}),
+              {description = "Run Command", group = "hotkeys"}),
     awful.key({ modkey, "Shift" }, "a", function() os.execute("rofi -modi \"clipboard:greenclip print\" -show clipboard -run-command '{cmd}'") end,
-              {description = "rofi", group = "hotkeys"}),
-    awful.key({ modkey, "Shift" }, "g", function() os.execute("rofi -p Search  -dmenu | xargs -I{} xdg-open 'https://www.google.com/search?q={}'") end,
-              {description = "Google Search", group = "hotkeys"}),
+              {description = "Clipboard", group = "hotkeys"}),
 
-    awful.key({ modkey }, "x",
-              function ()
-                  awful.prompt.run {
-                    prompt       = "Run Lua code: ",
-                    textbox      = awful.screen.focused().mypromptbox.widget,
-                    exe_callback = awful.util.eval,
-                    history_path = awful.util.get_cache_dir() .. "/history_eval"
-                  }
-              end,
-              {description = "lua execute prompt", group = "awesome"})
+    awful.key({ modkey, "Shift" }, "g", function() os.execute("~/dev/ghutil/github_issues.sh | rofi -i -p Github -i -dmenu | awk '{printf \"https://github.com/%s/issues/%s\", $2, $1}' | xargs -I{} xdg-open '{}'") end,
+              {description = "Github Issues", group = "hotkeys"})
 )
 
 clientkeys = my_table.join(
@@ -647,6 +523,7 @@ awful.rules.rules = {
             screen = "eDP-1",
             tag = awful.util.tagnames[1],
             switchtotag = true,
+            opacity = 1,
             floating = false,
             maximized = false
         }
@@ -656,6 +533,7 @@ awful.rules.rules = {
         properties = {
             screen = "DP-2",
             tag = awful.util.tagnames[3],
+            opacity = 1,
             floating = false,
             maximized_vertical = false,
             maximized_horizontal = false
@@ -666,6 +544,7 @@ awful.rules.rules = {
         properties = {
             screen = "DP-2",
             tag = awful.util.tagnames[5],
+            opacity = 1,
             floating = true,
             maximized_vertical = false,
             maximized_horizontal = false
