@@ -50,6 +50,7 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'jaredgorski/spacecamp'
 Plug 'markonm/traces.vim'
 Plug 'unblevable/quick-scope'
+Plug 'fatih/vim-go'
 
 " Plug 'Valloric/YouCompleteMe'
 
@@ -110,7 +111,7 @@ let g:SimpylFold_docstring_preview = 0
 
 " colorscheme nord
 
-colorscheme spacecamp
+colorscheme nord 
 
 set diffopt+=vertical
 
