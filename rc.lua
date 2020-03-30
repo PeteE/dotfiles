@@ -14,6 +14,8 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
                       require("awful.hotkeys_popup.keys")
 
 local cyclefocus = require('cyclefocus')
+-- cyclefocus.debug_level = 2
+-- cyclefocus.debug_use_naughty_notify = true
 
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 
@@ -202,19 +204,13 @@ root.buttons(my_table.join(
 
 globalkeys = my_table.join(
     -- Take a screenshot
-    awful.key({ altkey }, "s", function() os.execute("flameshot gui") end,
-              {description = "take a screenshot", group = "hotkeys"}),
-    awful.key({ altkey }, "s", function() os.execute("flameshot gui") end,
+    awful.key({ altkey }, "s", function() awful.spawn.with_shell("sleep 0.2 && screenshot.sh") end,
               {description = "take a screenshot", group = "hotkeys"}),
 
     awful.key({ modkey }, "p",      foggy.menu),
 
     awful.key({ altkey, "Control" }, "l", function () os.execute(scrlocker) end,
               {description = "lock screen", group = "hotkeys"}),
-
-    awful.key({ altkey }, "s", function() os.execute("flameshot gui") end,
-              {description = "take a screenshot", group = "hotkeys"}),
-
     -- Hotkeys
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description = "show help", group="awesome"}),

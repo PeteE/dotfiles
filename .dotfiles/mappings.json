@@ -1,3 +1,4 @@
 {
-    "rc.lua": "~/.config/awesome/rc.lua"
+    "rc.lua": "~/.config/awesome/rc.lua",
+    "bin/screenshot.sh": "~/bin/screenshot.sh"
 }
