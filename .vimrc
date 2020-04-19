@@ -25,6 +25,12 @@ let g:gitgutter_grep = 'ag'
 
 " Specify a directory for plugins
 call plug#begin('~/.vim/plugged')
+"
+" Plug 'ycm-core/YouCompleteMe'
+" Plug 'tmhedberg/SimpylFold'
+" Plug 'Konfekt/FastFold'
+" Plug 'benmills/vimux'
+" Plug 'jaredgorski/spacecamp'
 
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
@@ -32,27 +38,31 @@ Plug 'mtth/scratch.vim'
 Plug 'mileszs/ack.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'terryma/vim-smooth-scroll'
-Plug 'benmills/vimux'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-commentary'
-Plug 'tmhedberg/SimpylFold'
-Plug 'Konfekt/FastFold'
 Plug 'honza/vim-snippets'
 Plug 'kshenoy/vim-signature'
 Plug 'andrewstuart/vim-kubernetes'
 Plug 'ervandew/supertab'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'arcticicestudio/nord-vim'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-utils/vim-man'
 Plug 'romainl/vim-qf'
 Plug 'junegunn/vim-peekaboo'
-Plug 'jaredgorski/spacecamp'
 Plug 'markonm/traces.vim'
 Plug 'unblevable/quick-scope'
 Plug 'fatih/vim-go'
+Plug 'vimwiki/vimwiki'
+Plug 'tpope/vim-surround'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-unimpaired'
 
-" Plug 'Valloric/YouCompleteMe'
+Plug 'rbong/vim-flog'
+let g:flog_default_arguments = { 'max_count': 1000 }
+
+
+"Plug 'JamshedVesuna/vim-markdown-preview'
 
 call plug#end()
 
@@ -86,6 +96,7 @@ let g:ackhighlight=1
 cnoreabbrev Ack Ack!
 nnoremap <Leader>a yw:Ack!<Space><CR>0
 
+" let g:ycm_add_preview_to_completeopt = 1
 
 set statusline=%f\ -\ FileType:\ %y
 
@@ -95,9 +106,6 @@ noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 4)<CR>
 noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
 noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 
-" CtrlP
-let g:ctrlp_clear_cache_on_exit = 0
-set wildignore+=*/.venv/*,*/bin/*,*/src/packages/*
 " Insert timestamp
 nmap <Leader>ts i<C-R>=strftime("%Y-%m-%d %H:%M %Z")<CR><Esc>
 
@@ -109,22 +117,27 @@ let g:SimpylFold_docstring_preview = 0
 " let g:nord_italic = 1
 " let g:nord_italic_comments = 1
 
-" colorscheme nord
+" fzf
+nnoremap <Leader>f :Files<CR>
+nnoremap <Leader>b :Buffers<CR>
 
-colorscheme nord 
+augroup my_colours
+    autocmd!
+        autocmd ColorScheme nord hi SpellBad cterm=Underline ctermfg=Red
+    augroup END
+colorscheme nord
 
 set diffopt+=vertical
-
-nnoremap <Leader>vo :call VimuxOpenRunner()<CR>
-function! VimuxSlime()
- call VimuxSendText(@v)
- call VimuxSendKeys("Enter")
-endfunction
-vmap <Leader>tt "vy :call VimuxSlime()<CR>
 
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 let g:tmux_navigator_disable_when_zoomed = 1
 
+" vimwiki
+let g:vimwiki_list = [{'path': '~/vimwiki/',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
+
 "map <Space> :noh<cr>
 noremap <Space> :
+
+nmap <Leader>cp :let @+ = expand("%")<cr>
