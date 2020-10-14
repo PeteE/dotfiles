@@ -77,8 +77,6 @@ local chosen_theme = themes[6]
 local modkey       = "Mod4"
 local altkey       = "Mod1"
 local terminal     = "kitty"
--- local terminal     = "alacritty"
--- local terminal     = "gnome-terminal"
 local editor       = os.getenv("EDITOR") or "vim"
 local gui_editor   = "gvim"
 local browser      = "firefox"
@@ -88,7 +86,7 @@ local brightness   = os.getenv("HOME") .. "/bin/brightness"
 
 
 awful.util.terminal = terminal
-awful.util.tagnames = { "1", "2", "3", "4", "6", "7", "8", "9" }
+awful.util.tagnames = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 awful.layout.layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.floating,
@@ -162,9 +160,9 @@ lain.layout.cascade.tile.ncol          = 2
 
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
 
-beautiful.font = "Fira Code 12"
-beautiful.menu_width = 200
-beautiful.menu_height = 12
+beautiful.font = "Fira Code 14"
+beautiful.menu_width = 260
+beautiful.menu_height = 16
 beautiful.notification_shape = gears.shape.rounded_rect
 beautiful.notification_bg = '#212730'
 naughty.config.defaults.screen = 1
@@ -181,7 +179,7 @@ local myawesomemenu = {
     { "quit", function() awesome.quit() end }
 }
 awful.util.mymainmenu = freedesktop.menu.build({
-    icon_size = beautiful.menu_height or 12,
+    icon_size = beautiful.menu_height or 16,
     before = {
         { "Awesome", myawesomemenu, beautiful.awesome_icon },
         -- other triads can be put here
@@ -250,14 +248,16 @@ globalkeys = my_table.join(
         {description = "focus up", group = "client"}),
     awful.key({ modkey }, "h",
         function()
-            awful.client.focus.global_bydirection("left")
-            if client.focus then client.focus:raise() end
+            awful.screen.focus_relative(1)
+            -- awful.client.focus.global_bydirection("left")
+            --if client.focus then client.focus:raise() end
         end,
         {description = "focus left", group = "client"}),
     awful.key({ modkey }, "l",
         function()
-            awful.client.focus.global_bydirection("right")
-            if client.focus then client.focus:raise() end
+            awful.screen.focus_relative(-1)
+            -- awful.client.focus.global_bydirection("right")
+            --if client.focus then client.focus:raise() end
         end,
         {description = "focus right", group = "client"}),
     awful.key({ modkey,           }, "w", function () awful.util.mymainmenu:show() end,
@@ -397,7 +397,9 @@ clientkeys = my_table.join(
               {description = "toggle floating", group = "client"}),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
               {description = "move to master", group = "client"}),
-    awful.key({ modkey,           }, "o",      function (c) c:move_to_screen()               end,
+    awful.key({ modkey,           }, "o",      function (c) c:move_to_screen(c.screen.index - 1) end,
+              {description = "move to screen", group = "client"}),
+    awful.key({ modkey, "Shift"   }, "o",      function (c) c:move_to_screen(c.screen.index + 1) end,
               {description = "move to screen", group = "client"}),
     awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
               {description = "toggle keep on top", group = "client"}),

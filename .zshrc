@@ -5,7 +5,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-export PATH=$HOME/bin:/usr/local/bin:$PATH:~/go/bin:$HOME/.local/bin:/opt/Signal:/usr/local/rider/bin:$HOME/.krew/bin:$HOME/.cargo/bin
+export PATH=$HOME/bin:/usr/local/bin:$PATH:~/go/bin:$HOME/.local/bin:/opt/Signal:/usr/local/rider/bin:$HOME/.krew/bin:$HOME/.cargo/bin:/usr/local/pycharm-community-2020.1.2/bin/
 export ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ENABLE_CORRECTION="true"
@@ -18,7 +18,8 @@ ZSH_TMUX_AUTOSTART_ONCE=true
 ZSH_TMUX_AUTOCONNECT=true
 
 #plugins=(aws ssh-agent common-aliases gpg-agent history zsh-completions vi-mode kubectl)
-plugins=(aws ssh-agent common-aliases gpg-agent history zsh-completions zsh-autosuggestions zsh-syntax-highlighting vi-mode kubectl docker extract pass systemd tmux)
+# plugins=(aws ssh-agent common-aliases gpg-agent history zsh-completions zsh-autosuggestions zsh-syntax-highlighting vi-mode kubectl docker extract pass systemd tmux)
+plugins=(aws ssh-agent common-aliases gpg-agent zsh-completions fzf zsh-syntax-highlighting vi-mode kubectl docker extract pass systemd tmux)
 autoload -U compinit && compinit
 
 source <(kubectl completion zsh)
@@ -89,7 +90,8 @@ ZSH_AUTOSUGGEST_STRATEGY=histdb_top_here
 
 # User configuration
 alias mux=tmuxinator
-alias vi='vim'
+alias vi='nvim'
+alias vim='nvim'
 alias k='kubectl'
 alias ks='kubectl -n kube-system'
 alias ks='kubectl -n kube-system'
@@ -99,14 +101,16 @@ alias tidy='tidy -q -xml -indent'
 alias gf='git fetch'
 alias gs='git status'
 alias au='sudo apt update'
-alias vifz='vi $(fzf)'
+alias vfz='vi $(fzf)'
 alias weather='curl wttr.in/Minneapolis'
 unalias rm
 unalias cp
 unalias mv
 
+export FZF_DEFAULT_COMMAND='ag --hidden -g ""'
+export FZF_CTRL_R_OPTS="--preview 'echo {} |sed -e \"s/^ *\([0-9]*\) *//\" -e \"s/.\{$COLUMNS\}/&\n/g\"' --preview-window down:3"
 export DOTFILES_REPO_PATH=~/dotfiles
-export EDITOR='vim'
+export EDITOR='nvim'
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PYTHONWARNINGS="ignore:Unverified HTTPS request"
 
@@ -117,7 +121,7 @@ export k8s=$cfn/k8s
 alias pup="cd $pup"
 alias deki="cd $deki"
 alias cfn="cd $cfn; source .venv/bin/activate"
-alias k8s="export AWS_DEFAULT_PROFILE=alpha; cd $cfn; source .venv/bin/activate; cd k8s"
+alias k8s="cd $cfn; source .venv/bin/activate; cd k8s"
 alias pymtutil="cd ~/dev/pymtutil &&  source .venv/bin/activate"
 alias awsl="cd ~/dev/awslogs && source .venv/bin/activate"
 export GOPATH=~/go
@@ -212,12 +216,24 @@ eval "$(lua5.3 $HOME/dev/z.lua/z.lua --init zsh)"
 #source $LAMBDASHARP/Scripts/set-lash-version.sh
 #alias lash="dotnet run -p $LAMBDASHARP/src/LambdaSharp.Tool/LambdaSharp.Tool.csproj --"
 #alias lash="dotnet lash"
-export LAMBDASHARP_PROFILE=Default
+export LAMBDASHARP_PROFILE=alpha
 export LAMBDASHARP_TIER=alpha
 
 # export PATH="/home/petee/.pyenv/bin:$PATH"
 # eval "$(pyenv init -)"
 # eval "$(pyenv virtualenv-init -)"
 
+if [ ! -z "$TMUX" ]; then
+    TMUX_SESSION=$(tmux display-message -p '#S')
+    if [[ "$TMUX_SESSION" = "staging" ]]; then
+        awsstaging
+    elif [[ "$TMUX_SESSION" = "prod" ]]; then
+        awsprod
+    else
+       awsdev
+    fi
+fi
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
