@@ -1,0 +1,85 @@
+# vim: set ft=sh sw=4 et :
+
+# functions
+
+# hastebin
+HASTE_SERVER="https://hastebin.wheat-dn42.net"
+haste() { a=$(cat); curl -X POST -s -d "$a" "$HASTE_SERVER/documents" | awk -F '"' -v haste_server=$HASTE_SERVER '{printf "%s/%s\n", haste_server, $4}'; }
+
+# fh - fuzzy history
+fh() {
+    eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -r 's/ *[0-9]*\*? *//' | sed -r 's/\\/\\\\/g')
+}
+
+ecrlogin() {
+    aws --profile production ecr get-login --no-include-email --registry-ids 366391106850 |sh
+}
+
+ecrpublogin() {
+    aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+}
+
+mtssh()  {
+    ssh -i ~/.ssh/mt-cloud -l ec2-user ${@}
+}
+
+urldecode() {
+    python3 -c "import sys; from urllib.parse import unquote; print(unquote(sys.stdin.read()));"
+}
+
+datez() {
+    date -u +%FT%H:%M:%SZ
+}
+
+awsshell() {
+    aws ssm start-session --target $@
+}
+
+vpnon()  {
+    sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+    openvpn3 session-start --config mt
+}
+
+vpnoff() {
+    openvpn3 session-manage --disconnect  --config mt
+}
+
+extip() {
+    curl -s ifconfig.me
+}
+
+burpon() {
+    export HTTP_PROXY="http://127.0.0.1:8080"
+    export HTTPS_PROXY="http://127.0.0.1:8080"
+    export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+}
+burpoff() {
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    unset REQUESTS_CA_BUNDLE
+}
+pymtutil() {
+   cd ~/dev/pymtutil
+   source ~/.venv/bin/activate
+}
+
+bt-head() {
+    pactl set-card-profile bluez_card.60_AB_D2_36_00_B2 a2dp_sink
+}
+
+bt-ear() {
+    pactl set-card-profile bluez_card.78_2B_64_81_CB_DC a2dp_sink
+}
+
+deki-restore() {
+    pushd $deki/src 2>&1 > /dev/null
+    dotnet restore MindTouchDeki.sln
+    popd 2>&1 > /dev/null
+}
+
+deki-build() {
+    pushd $deki/src 2>&1 > /dev/null
+    dotnet build MindTouchDeki.sln --verbosity q
+    popd 2>&1 > /dev/null
+}
+

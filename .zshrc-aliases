@@ -1,0 +1,27 @@
+# vim: set ft=sh sw=4 et :
+
+alias mux="tmuxinator"
+alias vi='nvim'
+alias vim='nvim'
+alias ks='kubectl -n kube-system'
+alias ks='kubectl -n kube-system'
+alias kmt='kubectl -n mt-system'
+alias gd='git diff --color=always'
+alias gdu='git diff @{u}'
+alias tidy='tidy -q -xml -indent'
+alias gf='git fetch'
+alias gs='git status'
+alias au='sudo apt update'
+alias weather='curl -s wttr.in/Minneapolis'
+alias ll='exa -alh --sort modified'
+alias sr='ssh ripper'
+alias fd='/usr/bin/fdfind'
+alias pup="cd $pup"
+alias deki="cd $deki; source .venv/bin/activate"
+alias cfn="cd $cfn; source .venv-3.10/bin/activate"
+alias k8s="cd $cfn; source .venv-3.10/bin/activate; cd k8s"
+alias icat='kitty +kitten icat'
+
+unalias rm
+unalias cp
+unalias mv

@@ -1,0 +1,13 @@
+# vim: set ft=sh sw=4 et :
+
+# gh completion
+if [[ ! -f "$ZSH_CACHE_DIR/completions/_gh" ]]; then
+    gh completion -s zsh | tee "$ZSH_CACHE_DIR/completions/_gh" >/dev/null
+fi
+source "$ZSH_CACHE_DIR/completions/_gh"
+
+# helm
+if [[ ! -f "$ZSH_CACHE_DIR/completions/_helm" ]]; then
+    helm completion zsh | tee "$ZSH_CACHE_DIR/completions/_helm" >/dev/null
+fi
+source "$ZSH_CACHE_DIR/completions/_helm"
